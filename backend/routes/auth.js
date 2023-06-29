@@ -1,6 +1,10 @@
 const express = require('express');
+const { query } = require('express-validator');
 const router = express.Router();
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const { body, validationResult } = require("express-validator");
 
 router.get('/', (req, res) => {
@@ -26,17 +30,65 @@ router.post('/createuser', [
         if (user) {
             return res.status(400).json({ error: "User with this username already exists" })
         }
+        const salt = await bcrypt.genSalt(10);
+        const securePass = await bcrypt.hash(req.body.password, salt);
         user = await User.create({
             name: req.body.name,
             userName: req.body.userName,
-            password: req.body.password,
+            password: securePass,
         })
-        // .then(user => res.json(user))
-        // .catch(err => res.json({error: 'please enter a unique value for username'}))
-        res.json(user);
+        const data = {
+            user: {
+                id: user.id
+            }
+        }
+        const authtoken = jwt.sign(data, process.env.JWT_SECRET);
+        res.json({ authtoken });
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("some error occured");
+        res.status(500).send("Internal server error");
+    }
+})
+
+// authenticate a user using: POST "/api/auth/login". no login required
+router.post('/login', [
+    body('userName', 'Username must be atleast 3 characters long').isLength({ min: 3 }),
+    body('password', 'Password cannot be blank').exists(),
+], async (req, res) => {
+
+    // input validation
+    const errors = validationResult(req);
+    // if there are errors, return bad request along with errors
+    if (!errors.isEmpty()) {
+        return res.status(400).json({});
+    }
+
+    const {userName,password} = req.body;
+    try {
+        // checking if user with given user name exists in db
+        let user = await User.findOne({userName});
+        if(!user){
+            return res.status(400).json({error: "Enter valid login credentials"});
+        }
+
+        // checking if given password's hash matches stored hash 
+        const passwordCompare = await bcrypt.compare(password, user.password);
+        if(!passwordCompare){
+            return res.status(400).json({error: "Enter valid login credentials"});
+        }
+
+        // if credentials provided were valid, proceed to send auth token 
+        const data = {
+            user: {
+                id: user.id
+            }
+        }
+        const authtoken = jwt.sign(data, process.env.JWT_SECRET);
+        res.json({ authtoken });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal server error");
     }
 })
 module.exports = router
