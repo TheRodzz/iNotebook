@@ -4,14 +4,14 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+var fetchuser = require('../middleware/fetchuser');
 const { body, validationResult } = require("express-validator");
 
 router.get('/', (req, res) => {
     res.json([]);
 })
 
-// create a user using: POST "/api/auth/createuser". no login required
+//ROUTE 1: create a user using: POST "/api/auth/createuser". no login required
 router.post('/createuser', [
     body('name', 'Name must be atleast 3 characters long').isLength({ min: 3 }),
     body('userName', 'Username must be atleast 3 characters long').isLength({ min: 3 }),
@@ -50,7 +50,7 @@ router.post('/createuser', [
     }
 })
 
-// authenticate a user using: POST "/api/auth/login". no login required
+//ROUTE 2: authenticate a user using: POST "/api/auth/login". no login required
 router.post('/login', [
     body('userName', 'Username must be atleast 3 characters long').isLength({ min: 3 }),
     body('password', 'Password cannot be blank').exists(),
@@ -86,6 +86,19 @@ router.post('/login', [
         const authtoken = jwt.sign(data, process.env.JWT_SECRET);
         res.json({ authtoken });
 
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal server error");
+    }
+})
+
+// ROUTE 3: get logged in user's details using "POST /api/auth/getuser". Login required
+router.post('/getuser', fetchuser, async (req, res) => {
+
+    try {
+        const userId=req.user.id;
+        const user=await User.findById(userId).select('-password');
+        res.send(user);
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Internal server error");
