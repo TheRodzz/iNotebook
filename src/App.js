@@ -1,6 +1,7 @@
 import './App.css';
 import Home from './components/Home'
 import About from './components/About'
+import NoteState from './context/NoteState';
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,6 +11,7 @@ import Navbar from './components/Navbar';
 function App() {
   return (
     <div className="App">
+    <NoteState>
       <Router>
       <Navbar/>
       <h1>iNotebook</h1>
@@ -22,6 +24,7 @@ function App() {
           </Route>
         </Switch>
       </Router>
+    </NoteState>
     </div >
   );
 }
