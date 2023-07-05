@@ -8,12 +8,14 @@ import {
   Route,
 } from "react-router-dom";
 import Navbar from './components/Navbar';
+import Alert from './components/Alert';
 function App() {
   return (
     <div className="App">
     <NoteState>
       <Router>
       <Navbar/>
+      <Alert message="sample alert"/>
       <h1>iNotebook</h1>
         <Switch>
           <Route exact path="/">
