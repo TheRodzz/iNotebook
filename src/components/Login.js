@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import '../Login.css'
 import { useHistory } from 'react-router-dom'
+import { AlertContext } from '../context/AlertContext';
 const Login = () => {
+    const {showAlert,hideAlert} = useContext(AlertContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     let history =useHistory();
@@ -29,9 +31,13 @@ const Login = () => {
         if(json.success){
             localStorage.setItem('token',json.authtoken);
             history.push("/");
+            showAlert("Logged in successfully","success");
+            setTimeout(() => {
+                hideAlert();
+            }, 1500);
         }
         else{
-            alert("Invalid credentials")
+            showAlert("Invalid credentials","danger");
         }
     }
 

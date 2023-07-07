@@ -1,6 +1,12 @@
 import {React, useEffect} from 'react'
 import {Link,useLocation} from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 export default function Navbar() {
+    let history = useHistory();
+    const handleLogout = () =>{
+        localStorage.removeItem('token');
+        history.push("/login");
+    }
     let location = useLocation();
     useEffect(() => {
     }, [location]);
@@ -22,8 +28,14 @@ export default function Navbar() {
                     </ul>
 
                 </div>
+                { !localStorage.getItem('token')?
+                <div>
                 <Link className="btn btn-primary mx-1 btn-sm" to="/login" role="button">Login</Link>
                 <Link className="btn btn-primary mx-1 btn-sm" to="/signup" role="button">Signup</Link>
+                </div>
+                :<button type="button" className="btn btn-primary" onClick={handleLogout}>Logout</button>
+
+                }
             </div>
         </nav>
     )

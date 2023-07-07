@@ -6,6 +6,7 @@ import Login from './components/Login';
 import Navbar from './components/Navbar';
 import Alert from './components/Alert';
 import Signup from './components/Signup';
+import { AlertProvider } from './context/AlertContext';
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,27 +16,29 @@ import {
 function App() {
   return (
     <div className="App">
-    <NoteState>
-      <Router basename={process.env.PUBLIC_URL}>
-      <Navbar/>
-      <Alert message="sample alert"/>
-      <h1>iNotebook</h1>
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/about">
-            <About />
-          </Route>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-          <Route exact path="/signup">
-            <Signup />
-          </Route>
-        </Switch>
-      </Router>
-    </NoteState>
+      <AlertProvider>
+        <NoteState>
+          <Router>
+            <Navbar />
+            <Alert/>
+            <h1>iNotebook</h1>
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route exact path="/about">
+                <About />
+              </Route>
+              <Route exact path="/login">
+                <Login />
+              </Route>
+              <Route exact path="/signup">
+                <Signup />
+              </Route>
+            </Switch>
+          </Router>
+        </NoteState>
+      </AlertProvider>
     </div >
   );
 }
