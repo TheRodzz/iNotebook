@@ -2,13 +2,16 @@ import './App.css';
 import Home from './components/Home'
 import About from './components/About'
 import NoteState from './context/NoteState';
+import Login from './components/Login';
+import Navbar from './components/Navbar';
+import Alert from './components/Alert';
+import Signup from './components/Signup';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
 } from "react-router-dom";
-import Navbar from './components/Navbar';
-import Alert from './components/Alert';
+
 function App() {
   return (
     <div className="App">
@@ -23,6 +26,12 @@ function App() {
           </Route>
           <Route exact path="/about">
             <About />
+          </Route>
+          <Route exact path="/login">
+            <Login />
+          </Route>
+          <Route exact path="/signup">
+            <Signup />
           </Route>
         </Switch>
       </Router>

@@ -43,7 +43,7 @@ const NoteState = (props) =>{
           element.tag=tag;
           break;
         }
-        
+        // TODO: add api call
       }
     }
 
