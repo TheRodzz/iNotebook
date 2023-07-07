@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import '../Login.css'
+import { useHistory } from 'react-router-dom'
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
+    let history =useHistory();
     const handleUsernameChange = (e) => {
         setUsername(e.target.value);
     };
@@ -12,10 +13,27 @@ const Login = () => {
         setPassword(e.target.value);
     };
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Handle login logic here
-    };
+
+        const host = "http://localhost:5000";
+        const response = await fetch(`${host}/api/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({userName: username, password: password})
+        });
+        const json = await response.json();
+        // console.log(json)
+        if(json.success){
+            localStorage.setItem('token',json.authtoken);
+            history.push("/");
+        }
+        else{
+            alert("Invalid credentials")
+        }
+    }
 
     return (
         <div className="container">
@@ -32,6 +50,7 @@ const Login = () => {
                                         className="form-control"
                                         id="username"
                                         value={username}
+                                        required
                                         onChange={handleUsernameChange}
                                     />
                                 </div>
@@ -42,6 +61,8 @@ const Login = () => {
                                         className="form-control"
                                         id="password"
                                         value={password}
+                                        required
+                                        minLength={5}
                                         onChange={handlePasswordChange}
                                     />
                                 </div>

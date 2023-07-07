@@ -1,26 +1,46 @@
 import React, { useState } from 'react';
 import '../Signup.css'; // Import custom CSS file
+import { useHistory } from 'react-router-dom'
 
 const Signup = () => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  let history = useHistory();
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleNameChange = (e) => {
+    setName(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    // Handle signup logic here
+    e.preventDefault();
+
+    const host = "http://localhost:5000";
+    const response = await fetch(`${host}/api/auth/createuser`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userName: username, password: password, name: name})
+    });
+    const json = await response.json();
+    // console.log(json)
+    if(json.success){
+        localStorage.setItem('token',json.authtoken);
+        history.push("/");
+    }
+    else{
+        alert("Invalid credentials")
+    }
   };
 
   return (
@@ -38,17 +58,19 @@ const Signup = () => {
                     className="form-control"
                     id="username"
                     value={username}
+                    required
                     onChange={handleUsernameChange}
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="email">Email:</label>
+                  <label htmlFor="name">Name:</label>
                   <input
-                    type="email"
+                    type="text"
                     className="form-control"
-                    id="email"
-                    value={email}
-                    onChange={handleEmailChange}
+                    id="name"
+                    value={name}
+                    required
+                    onChange={handleNameChange}
                   />
                 </div>
                 <div className="form-group">
@@ -58,6 +80,8 @@ const Signup = () => {
                     className="form-control"
                     id="password"
                     value={password}
+                    required
+                    minLength={5}
                     onChange={handlePasswordChange}
                   />
                 </div>

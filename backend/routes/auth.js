@@ -16,18 +16,18 @@ router.post('/createuser', [
     body('userName', 'Username must be atleast 3 characters long').isLength({ min: 3 }),
     body('password', 'Password must be at least 8 characters long').isLength({ min: 8 })
 ], async (req, res) => {
-
+    let success=false;
     const errors = validationResult(req);
     // if there are errors, return bad request along with errors
     if (!errors.isEmpty()) {
-        return res.status(400).json({ error: errors.array() });
+        return res.status(400).json({ success,error: errors.array() });
     }
     // check wether a user with same username exists
     try {
 
         let user = await User.findOne({ userName: req.body.userName });
         if (user) {
-            return res.status(400).json({ error: "User with this username already exists" })
+            return res.status(400).json({success, error: "User with this username already exists" })
         }
         const salt = await bcrypt.genSalt(10);
         const securePass = await bcrypt.hash(req.body.password, salt);
@@ -42,7 +42,8 @@ router.post('/createuser', [
             }
         }
         const authtoken = jwt.sign(data, process.env.JWT_SECRET);
-        res.json({ authtoken });
+        success=true;
+        res.json({success, authtoken });
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Internal server error");
@@ -54,12 +55,12 @@ router.post('/login', [
     body('userName', 'Username must be atleast 3 characters long').isLength({ min: 3 }),
     body('password', 'Password cannot be blank').exists(),
 ], async (req, res) => {
-
+    let success=false;
     // input validation
     const errors = validationResult(req);
     // if there are errors, return bad request along with errors
     if (!errors.isEmpty()) {
-        return res.status(400).json({});
+        return res.status(400).json({success});
     }
 
     const {userName,password} = req.body;
@@ -67,13 +68,13 @@ router.post('/login', [
         // checking if user with given user name exists in db
         let user = await User.findOne({userName});
         if(!user){
-            return res.status(400).json({error: "Enter valid login credentials"});
+            return res.status(400).json({success,error: "Enter valid login credentials"});
         }
 
         // checking if given password's hash matches stored hash 
         const passwordCompare = await bcrypt.compare(password, user.password);
         if(!passwordCompare){
-            return res.status(400).json({error: "Enter valid login credentials"});
+            return res.status(400).json(success,{error: "Enter valid login credentials"});
         }
 
         // if credentials provided were valid, proceed to send auth token 
@@ -83,7 +84,8 @@ router.post('/login', [
             }
         }
         const authtoken = jwt.sign(data, process.env.JWT_SECRET);
-        res.json({ authtoken });
+        success=true;
+        res.json({ success,authtoken });
 
     } catch (error) {
         console.error(error.message);
@@ -93,10 +95,11 @@ router.post('/login', [
 
 // ROUTE 3: get logged in user's details using "POST /api/auth/getuser". Login required
 router.post('/getuser', fetchuser, async (req, res) => {
-
+    let success=false;
     try {
         const userId=req.user.id;
         const user=await User.findById(userId).select('-password');
+        success=true;
         res.send(user);
     } catch (error) {
         console.error(error.message);

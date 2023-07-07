@@ -16,7 +16,7 @@ function App() {
   return (
     <div className="App">
     <NoteState>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
       <Navbar/>
       <Alert message="sample alert"/>
       <h1>iNotebook</h1>
