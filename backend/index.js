@@ -4,6 +4,9 @@ require('dotenv').config()
 connectToDB(process.env.MONGO_URI)
 const app = express()
 const port = 5000
+const cors = require('cors')
+ 
+app.use(cors())
 
 // app.get('/', (req, res) => {
 //   res.send('Hello World!')

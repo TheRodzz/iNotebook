@@ -27,7 +27,11 @@ const AddNote = () => {
                     <label htmlFor="description">Description</label>
                     <input type="text" className="form-control" id="description" name='description' placeholder="Enter description" onChange={handleChange} />
                 </div>
-                <button type="submit" className="btn btn-primary my-3" onClick={handleClick}>Submit</button>
+                <div className="for09-om-group">
+                    <label htmlFor="tag">Tag</label>
+                    <input type="text" className="form-control" id="tag" name='tag' placeholder="Enter tags" onChange={handleChange} />
+                </div>
+                <button type="submit" className="btn btn-primary my-3" onClick={handleClick}>Add Note</button>
             </form>
         </div>
     )
