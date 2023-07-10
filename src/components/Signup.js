@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../Signup.css'; // Import custom CSS file
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -85,10 +85,11 @@ const Signup = () => {
                     onChange={handlePasswordChange}
                   />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary my-2">
                   Sign Up
                 </button>
               </form>
+              <p className='my-2'>Already have an account? Click here to <Link to='login'>login</Link></p>
             </div>
           </div>
         </div>

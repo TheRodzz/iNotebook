@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react';
 import '../Login.css'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { AlertContext } from '../context/AlertContext';
+
 const Login = () => {
-    const {showAlert,hideAlert} = useContext(AlertContext);
+    const { showAlert, hideAlert } = useContext(AlertContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    let history =useHistory();
+    let history = useHistory();
     const handleUsernameChange = (e) => {
         setUsername(e.target.value);
     };
@@ -24,20 +25,20 @@ const Login = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({userName: username, password: password})
+            body: JSON.stringify({ userName: username, password: password })
         });
         const json = await response.json();
         // console.log(json)
-        if(json.success){
-            localStorage.setItem('token',json.authtoken);
+        if (json.success) {
+            localStorage.setItem('token', json.authtoken);
             history.push("/");
-            showAlert("Logged in successfully","success");
+            showAlert("Logged in successfully", "success");
             setTimeout(() => {
                 hideAlert();
             }, 1500);
         }
-        else{
-            showAlert("Invalid credentials","danger");
+        else {
+            showAlert("Invalid credentials", "danger");
         }
     }
 
@@ -72,10 +73,11 @@ const Login = () => {
                                         onChange={handlePasswordChange}
                                     />
                                 </div>
-                                <button type="submit" className="btn btn-primary">
+                                <button type="submit" className="btn btn-primary my-2">
                                     Login
                                 </button>
                             </form>
+                            <p className='my-2'>Don't have an account? Click here to <Link to='signup'>sign up</Link></p>
                         </div>
                     </div>
                 </div>
