@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../Signup.css'; // Import custom CSS file
+import '../customCSS/Signup.css'
 import { Link, useHistory } from 'react-router-dom'
 
 const Signup = () => {

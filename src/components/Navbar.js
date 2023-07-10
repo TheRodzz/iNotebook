@@ -28,12 +28,12 @@ export default function Navbar() {
                     </ul>
 
                 </div>
-                { !localStorage.getItem('token')?
-                <div>
-                <Link className="btn btn-primary mx-1 btn-sm" to="/login" role="button">Login</Link>
-                <Link className="btn btn-primary mx-1 btn-sm" to="/signup" role="button">Signup</Link>
-                </div>
-                :<button type="button" className="btn btn-primary" onClick={handleLogout}>Logout</button>
+                {!localStorage.getItem('token') ?
+                    <div>
+                        <Link className="btn btn-primary mx-1 btn-sm" to="/login" role="button">Login</Link>
+                        <Link className="btn btn-primary mx-1 btn-sm" to="/signup" role="button">Signup</Link>
+                    </div>
+                    : <button type="button" className="btn btn-primary" onClick={handleLogout}>Logout</button>
 
                 }
             </div>

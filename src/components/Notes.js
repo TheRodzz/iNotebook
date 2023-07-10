@@ -3,6 +3,8 @@ import noteContext from '../context/noteContext';
 import NoteItem from './NoteItem';
 import AddNote from './AddNote';
 import { useHistory } from 'react-router-dom';
+import '../customCSS/Notes.css'
+
 const Notes = () => {
     const context = useContext(noteContext);
     const { notes, getAllNotes } = context;
